@@ -1,11 +1,49 @@
-import './App.css';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios'
+import React, { useState } from "react";
+import Form from "./Form";
+import "./App.css"; 
 
-function App() {
-  const [getMessage, setGetMessage] = useState({})
+export default () => {
+  const [getMessage, setGetMessage] = useState([]);
 
-  useEffect(()=>{
+  const toggleComplete = i =>
+  setGetMessage(
+      getMessage.map(
+        (todo, k) =>
+          k === i
+            ? {
+                ...todo,
+                complete: !todo.complete
+              }
+            : todo
+      )
+    );
+
+  return (
+    <div className="App">
+      To Do List
+      <Form
+        onSubmit={text => setGetMessage([{ text, complete: false }, ...getMessage])}
+      />
+      <div>
+        {getMessage.map(({ text, complete }, i) => (
+          <div
+            key={text}
+            onClick={() => toggleComplete(i)}
+            style={{
+              textDecoration: complete ? "line-through" : ""
+            }}
+          >
+            {text}
+          </div>
+        ))}
+      </div>
+      <button onClick={() => setGetMessage([])}>Refresh</button>
+    </div>
+  );
+};
+
+/*
+useEffect(()=>{
     axios.get('http://localhost:5000/hello').then(response => {
       console.log("SUCCESS", response)
       setGetMessage(response)
@@ -14,16 +52,4 @@ function App() {
     })
 
   }, [])
-
-  return (
-    <div className="App">
-      <div>{getMessage.status === 200 ? 
-        <h3>{getMessage.data.message}</h3>
-        :
-        <h3>LOADING</h3>}
-      </div>
-    </div>
-  );
-}
-
-export default App;
+  */
